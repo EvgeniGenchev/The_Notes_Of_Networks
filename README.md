@@ -836,8 +836,32 @@ protocol  host   domain       path
 			- unrealibale
 			- unordered
 			- "best effort"
+### Demultiplexing:
+- Ip Datagrams:
+	- Source IP Address
+	- Destination IP Address
+	- Segment:
+		- Source Port
+		- Destination Port
+
+- in UDP:
+	- Indenfiers:
+		- Destination port
+		- Destination IP address
+
+	- Port numbers:
+		- Well-Known Port Numbers:<br>
+			`0-1023`	
+		- Other Port Numbers:<br>
+			`1024-65535`
+- in TCP:
+	- Indenfiers:
+		- Source port
+		- Source IP address
+		- Destination port
+		- Destination IP address	
 			
-#### User Datagram Protocol(UDP):
+### User Datagram Protocol(UDP):
 - Low effort:
 ```
 	this processes is the low effort transport protocol
@@ -912,7 +936,7 @@ carry that goes out of the 16 bits returns from the beginning
 		checksum is guarantee that the network layer had no
 		corruptions.
 	```
-#### Principles of Reliable Data Transfer:
+### Principles of Reliable Data Transfer:
 - Reliable Data Transfer:
 	- Incremental Development:
 	```
@@ -1026,7 +1050,7 @@ carry that goes out of the 16 bits returns from the beginning
 							- Increase amount of Seq#
 							- Buffering 
 						- Types: 
-							- Go-N-Back:<br>
+							- Go-N-Back:<br> <a name="go-n-back"></a>
 							send all the packets from N on again
 								1 Sender:
 									- send up to N unACked pkts in pipeline
@@ -1046,6 +1070,348 @@ carry that goes out of the 16 bits returns from the beginning
 							3 Sender: 
 								- Timer for each unACKed pkt
 								- If timer expires, retransmit only unACKed pk
+								
+### Transmission Control Protocol:
+- Unicast:
+	- one sender --> one receiver
+- Reliable, In-Order Byte Stream
+- Connection oriented
+- Pipeline
+- Full Duplex
+	- bidirectional dataflow 
+- Flow Control:
+```
+	sender will limit its sending speed in regards to the receiver
+	receiving speed in order for the receiver not to be overwhelmed
+```
+- Congestion control:
+```
+	sender will limit its sending speed in respect to the bandwidth 
+	of the network
+```
+#### TCP Seq # and ACKs:
+- Example:
+```
+	HOST A ------Seq=42, ACK=79, data = 'C'--> HOST B
+	HOST A <-----Seq=79, ACK=43, data = 'C'--> HOST B
+```
+
+When HOST A sends data to HOST B it sends the n-th byte sequence <br>
+and an acknowledgement. Then HOST B echoes the data back with swapped<br>
+sequence and acknowledgement and increments this way HOST B comfirms <br>
+the received data.<br>
+
+#### Round trip time and timeout:
+- How to set ?
+	- RTT estimation:
+		- Sample RTT: 
+			- messured time for segment transition to receive an ACK
+		- Average RTT:<br>
+		a: is a value between 0 and 1 and it used as a `weight` for <br>
+		the two values. The bigger the a the smaller `weight` the previous <br>
+		reading will have. <br>
+		```
+		estimatedRTT = (1 - a) * estimatedRTT + a * sampleRTT
+			       [previous estimatedRTT]  [current sampleRTT]
+		```
+	- Timeout:
+		`Timeout = estimatedRTT + safetyMargin`
+		- Safety margin:
+			```
+			Safety margin is needed in order to prevent premature timeout and it
+			equal an estimated deviation (devRTT) of a sampleRTT
+			```
+			b: is a value between 0 and 1 (look the explanation of a in "Average RTT")
+			```
+			devRTT = (1 - b) * devRTT + b * | sampleRTT - estimatedRTT|
+				[previous devRTT]      [the current error margin]
+			```
+			This formula implies that the error margin and the deviation (safetyMargin)<br>
+			are parallel to each other. This means the smaller the error margin the smaller <br>
+			the safetyMargin. <br>
+			
+			`timeoutInterval = estimatedRTT + 4 * devRTT`
+	- Reliable data transfer:
+		- runs on top of an unrealibale service IP:
+			- this implies possibility of packet loss, delay, throughput
+		- In order for TCP to reliable send data through IP it uses:
+			- Pipeline Segments:
+				- multiple segments can be out at once
+			-  Culminative ACks
+				- (look at [Go-N-Back](#go-n-back))
+			- Single Transmission Timer:
+				- the timer equals the oldest standing unACKed package
+			- Retransmission Triggered by:
+				- Timeouts
+				- Duplicate ACKs
+		- Sender Events:
+			- Data is received from App
+				1. Create a segment with Seq # <br>
+					`Seq # = numbering the bytes`
+				2. Start a timer for the oldest stading unACKed segment <br>
+					`the timer will be calculated with the formulas stated above`
+			- Timeout 
+				1. Retransmission of the segment that caused the timeout	
+				2. restart the timer 
+			- ACK is received
+				1. Checks if the ACK is for a previously unACKed segment:
+						`if so it updates the memory in order to have the transmission counted as success`
+			- Simplified example of Sender psuedo-code:
+					*This psuedo-code is not completed and more will be added
+			```
+					NextSeqNIM = InitialSeqNum
+					SendBase = InitialSeqNum 
+					loop(forever){
+						switch(event){
+							event : data received from the application above
+								create TCP segment wiht sequence num NextSeqNum
+								if(timer currently not running)
+									start timer
+								pass segment to IP
+								NextSeqNum = NextSeqNum + length(data)
+							event : timer timeout
+								retransmit unACKed segment with smallest sequence num
+								start timer
+							event : ACK received, with ACK field value of y
+								if (y  > SendBase)
+									SendBase = y
+									if (there are currently unACked segments)
+										start timer
+						}
+					}
+			```
+			- Example of lost ACK:
+			```
+					X : lost
+					HOST A --------Seq=92, 8 bytes data -------> HOST B [send base is 92]
+					HOST A     X<------ACK=100------------------ HOST B
+					*Timout runs out
+					HOST A --------Seq=92, 8 bytes data -------> HOST B
+					HOST A <-----------ACK=100------------------ HOST B [send base is 100 (Seq# + length of bytes)]
+			```
+			- Example of premature timeout:
+			```
+					HOST A --------Seq=92, 8 bytes data -------> HOST B [send base is 92]
+					HOST A --------Seq=100, 20 bytes data -----> HOST B [send base is still 92]
+					*Timer for the oldest segment (Seq=92) runs out
+					HOST A --------Seq=92, 8 bytes data -------> HOST B [send base is still 92]
+					HOST A <-----------ACK=100------------------ HOST B [send base is 100]
+					HOST A <-----------ACK=120------------------ HOST B [send base is 120]
+					HOST A <-----------ACK=120------------------ HOST B [send base is 120]
+						"this states tha all the packets up until 120 are received"
+			```
+			- Example of cumulative ACK:
+			```
+					HOST A --------Seq=92, 8 bytes data -------> HOST B [send base is 92]
+					HOST A     X<------ACK=100------------------ HOST B
+					HOST A --------Seq=100, 20 bytes data -----> HOST B [send base is still 92]
+					HOST A <-----------ACK=120------------------ HOST B [send base is 120]
+			```
+		- ACK Generation:
+			- Receiver Events and actions:
+				*events and actions numeration does not imply order rahter than separation
+			```
+					Event 1:
+						-> Arrival of in-order segmnet with expected seq
+						-> All data up to expected seq is ACKEd
+					Action 1:
+						-> Delay ACK
+						-> Wait up to 500ms for next segment
+						-> If timeout, send ACK
+					Event 2:
+						-> Arrival of in-order segment with expected seq
+						-> One other segment has ACK pending
+					Action 2:
+						-> immediately send single cumulative ACK, ACKing both in-order segment
+					Event 3:
+						-> Arrival of out-of-order segment 
+							higher-than-expected seq
+						-> Gap detected
+					Action 3:
+						-> Immediately send duplicate ACK of next expected byte
+					Event 4: 
+						-> Arrival of segment that partially or completely fills gaps
+					Action 4:
+						-> Immediately send ACK, provided that segment starts at lower end
+							gap
+			```
+		- Fast Retransmission algorithm:
+			- Problem:
+			```
+				The Timout Interval is too long. During this interval the receiver
+				send ACK for the last received packet multiple times but the sender
+				will have to wait for the timeout before sending the lost packet again
+			```
+			- Soluton:<br>
+				`Detect lost segments via duplicate ACKs `
+			- Algorithm:<br>
+			`If 3 duplicate ACKs are being received, resend the segment before timer expires.`
+				- Psedo-code:
+			```
+						event : ACK receivedm with ACK field value of y
+							if (y > SendBase){
+								SendBase = y 
+								if (there are currently unACKed segments){
+									start timer
+								}
+							}else{
+								increment count of duplicate ACKs received for y
+								if (count of duplicate ACKs is greater than 3){
+									resend segment wiht sequence num = y
+								}
+							}
+			```
+		- Flow control:
+			1. Preventing a fast sender to overwhelm slow receiver
+			2. Matching the speed of the sending and receiving
+			- Unused Buffer Space:
+				```
+					rwnd : receive window or unused buffer space
+					RcvBuffer : buffer space
+					rwnd = RcvBuffer - [LastByteRcvd - LastByteRead]
+				```
+					- Receiver:
+						- every ACK will contain the rwmd
+					- Sender:
+						- limits the number of unACKed bytes to the receive window
+		- Connection Management:
+			- Connection oriented:
+				```
+					This implies the need for a connection to be established in order
+					for a transmittion to be possible.
+				```
+			- TCP variables:
+				* these variables have to be set beforehand 
+				- Seq #'s
+				- Buffers
+				- Flow Control
+		- 3-way-handshake:
+			```
+				1.Client ------SYN-----> Server [contains no data]
+				2.Client <---SYN-ACK---- Server [contains no data]
+				3.Client ------ACK-----> Server [may contain data]
+			```
+			1. Clent sends a TCP SYN to the server that specifies the inital Seq
+			2. Server receives the SYN, allocates buffer, specifies its own inital seq and replies with SYN ACK
+			3. Clent receives SYNACK, replies wiht ACK
+		- SYN Flood Attack
+			- Deluge of SYNs:
+				- send a lot of SYNs
+			- Deplete Server Resources:
+				- server allocates resources for these half open connections
+			- SYN Cookies
+				- used to overcome the Flood attack
+		- Closing the connection:
+			```
+				1.Client ------FIN-----> Server
+				2.Client <-----ACK------ Server
+				3.Client <-----FIN------ Server
+				4.Client -----ACK------> Server
+			```
+			1. FIN Sent
+			2. ACK Sent
+				- receive FIN
+				- Close connection
+				- Send FIN
+			3. ACK Received
+				- Receive DIN
+				- Replies wiht ACK
+			4. ACK received
+				-Connection closed
+		- Segment Structure of TCP:
+			- U, A, P, R, S, F : control flags that indicate if on of the following is true:
+			- URG: Urgent pointer is valid
+			- ACK: Acknowledgement number is valid( used in case of cumulative acknowledgement)
+			- PSH: Request for push
+			- RST: Reset the connection
+			- SYN: Synchronize sequence numbers
+			- FIN: Terminate the connection
+			```
+				+------------------------+------------------------+
+				| source port #          |  dest port #           | 
+				+------------------------+------------------------+ <---+----------------
+				|         sequence number (Seq #)                 | 	| counting by 
+				+-------------------------------------------------+	| bytes of data
+				|         acknowledgement number (ACK)            |	| (not segments!)
+				+------------------------+------------------------+ <---+----------------
+				| head | not |U|A|P|R|S|F| receive window (rwnd)  | 	| # bytes rcvr willing
+				| len  | used| | | | | | |                        |	| to accept
+				+------------------------+------------------------+ <---+----------------
+				| 	    checksum     | Urg data pointer       |
+				+------------------------+------------------------+
+				|            Options (variable length)            |
+				+-------------------------------------------------+
+				|             application data (variable length)  |
+				+-------------------------------------------------+ 
+			```
+#### Principles of Congestion control:
+- What is congestion?
+	- too much demand for the available supply of a resource
+	- if there are too many senders trying to send a packet through the network
+	- Problems: 
+		- delay
+		- loss
+	- Costs of congestion:
+		1. the sender must send retranstmissions in order to compansater for packets being dropped due to buffer overflow.
+		2. uneeded retranstmissions by the sender in the face of large delays may cause a router to waste its link bandwidth forwarding uneeded copies of a packet.
+		3.  when a packet is dropped along a path, the transmission capacity that was 
+					used at each of the stream links to forward that packet to the point it was
+					dropped have been wasted.
+
+	- Approaches to Congestion Control
+		- End-to-end:
+			- No explicit feedback
+			- Congestion Inferred:
+				- From End-System
+				- Observed Loss
+				- Delay
+			- TCP
+		- Network Assisted:
+			- Network feedback:
+				- from router
+				- single bit
+				- explicit Rate
+			- ATM
+#### Congestion Control:
+- Implicit End-to-end Feedback:
+	- When an ACK is received try to speed up the rate at which packets are being sent
+	- When an ACK is missing try to slow down the rate at which packets are being sent
+
+- How to slow down the rate?
+```
+	cwnd : congestion window 
+	Sender limited by min(cwnd, rwnd)
+	Sending rate = cwdn / RTT
+```
+- How to find rate just below congestion level?
+	- Bandwidth probing:
+		- increase the speed until there is a packet loss than drop
+- Success event:
+	- increase cwnd in one of the following modes:
+	1. Slowstart:
+		- Increase speed exponentially (double the MSS per RTT)
+		- Connection start or after timeout
+		1. ssthresh is the slow start threshold 
+			- cwnd threshold maintained by TCP
+		2. on timeout ssthresh is set to half of cwnd
+		3. when cwnd >= ssthresh the mode is being switched to congestion avoidance
+
+	2. Congestion avoidance:
+		- increase speed linearly (by 1 MSS per RTT)
+		- normal opeartion
+		- this mode is on when cwnd > ssthresh
+		1. Implementation:
+			- cwnd += MSS/cwnd for each ACK received
+- Loss event:
+	- decrease cwnd
+	- Timeouts:
+		- Cut cwnd to 1
+	- 3 Duplicate ACKs
+		- Cut cwnd in half
+
+
+
+
 
 
 
