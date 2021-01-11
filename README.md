@@ -455,20 +455,20 @@ protocol  host   domain       path
  				6. User agent 2 receives the message
  			- Interaction:
 			```
- 						S: 220 gmail.com
- 						C: HELO abv.bg               | the handshake
- 						S: 250 *greeting message     
- 						C: MAIL FROM: <palpatine@abv.bg>    | the transfer of message 
- 						S: 250 <palpatine@abv.bg> Sender ok...
- 						C: RCPT TO: <the_senate@gmail.com> 
- 						S: 250 <the_senate@gmail.com> Recipient ok
- 						C: DATA
- 						S: 354 Enter mail, end with '.' on a line by itself
- 						C: I love democracy
- 						C: .
- 						S: 250 Message accepted for delivery
- 						C: QUIT   | the closure
- 						S: 221 gmail.com closing the connection
+ 					S: 220 gmail.com
+ 					C: HELO abv.bg               | the handshake
+ 					S: 250 *greeting message     
+ 					C: MAIL FROM: <palpatine@abv.bg>    | the transfer of message 
+ 					S: 250 <palpatine@abv.bg> Sender ok...
+ 					C: RCPT TO: <the_senate@gmail.com> 
+ 					S: 250 <the_senate@gmail.com> Recipient ok
+ 					C: DATA
+ 					S: 354 Enter mail, end with '.' on a line by itself
+ 					C: I love democracy
+ 					C: .
+					S: 250 Message accepted for delivery
+ 					C: QUIT   | the closure
+ 					S: 221 gmail.com closing the connection
 			```
  			- Characteristics:
  				- Persistant connection:
