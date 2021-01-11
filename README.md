@@ -288,19 +288,19 @@ between eachother
 			they are being send
 		```
 		- Conngestion Control:
-		```
+		```     
 			Slowing down the sender beacuse the netowork<br>
 			is not able to accept all the packets because<br>
 			otherwise that could lead to packet lost
 		```
-	- UDP:<br>
-	```
+	- UDP:
+		```
 			NOT Reliable, Flow or Congestion control
 			It is connectionless and there is no guarantee
 			the packages will be transmitted 
-	```	
+		```
 		- Why do we have it than:
-			it is faster than TCP
+			- it is faster than TCP
 #### Web and HTTP:
 <br>
 https://  www.   github.com   /EvegniGenchev <br>
