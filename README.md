@@ -8,6 +8,7 @@ The following chapters will include notes that I have made during reading Comput
 3. [Network securrity](#ns)
 4. [Application layer](#a)
 5. [Transport layer](#t)
+6. [Network layer](#n)
 
 ## Delay, Loss and Throughput: <a name="dlt"></a>
 ### Sources of packet delay:
@@ -1408,6 +1409,188 @@ the received data.<br>
 		- Cut cwnd to 1
 	- 3 Duplicate ACKs
 		- Cut cwnd in half
+## Network layer:  <a name="n"</a><br>
+`provides connection between two hosts.`
+### Introduction:
+#### 2 Key Network-Layer Functions:
+- Forwarding:
+	local process 
+- Routing:
+	global process
+- Example :<br>
+	`When the GPS finds the shortest way is rounting, whereas forwarding is the annoying voice that tells you where to go on every turn`
+#### Network Service Model:
+- Per datagram:
+	- guarantee delivery
+	- guarantee delivery wiht bounded delay
+- Per Flow:
+	- in-order delivery
+	- guarantee minimum bandwidth
+	- maximum jitter:
+		- variation in package spacing
+
+### Virtual circuit and datagram networks:
+#### Connection vs connection-less:
+- Datagram:
+	- Connection-less
+	- best effort
+	- No setup call
+	- No state info 
+	- Packets forwardrd using destination address
+
+
+- Virtual Circuit:
+	- Connection-ful
+	- Call Setup/teardown:
+		- Signaling Protocols
+	- VC Identifier:
+		- no destination host address
+	- Router state:
+	- Resource Reservation:
+		- dedicated resource
+	- VC Implementation:
+ 		- Components:
+ 			- Path
+ 			- VC Numbers
+ 			- Entries in Forwarding tables
+ 	- Forwarding:
+ 		- 32-bit Address:<br>
+ 			`~4 billion possiblities`
+ 		- Exaustive Forwarding Table
+ 		- Forwarding table:
+ 			- Prefix matching:
+ 				`encapsulation of ranges of addresses by having the longest prefix that two numbers have in common`
+				- Example:
+					```
+					1 | 232.123.156.XXX
+					2 | 232.123.157.xxx
+				        ```
+					- If the ip is 232.123.156.2 it will choose the first ouptup port
+					- If the ip is 232.123.157.2 it will choose the second one 
+
+#### Datagram vs VC Network:
+- Datagram(IP):
+ 	- Purpose:
+ 		- use in computers
+ 	- Smart end systems:
+ 		- capable of a lot of calculations
+ 	- Simple network core:
+ 		- everything is taken care of in the transport layer
+ 	- Many link types
+
+ - Virtual Circuit(ATM):
+ 	- Purpose:
+ 		- use in telephones 
+ 	- Dumb end systems:
+ 		- simple capability
+ 	- Complex core:
+ 		- everything has to be taken care of in the network core
+ 	- Few link types
+ #### Internals of a router:
+ - Architecture Overview:
+ 	- Functions:
+ 		- Rounting
+ 		- Forwarding
+ 	- Components:
+ 		- Input ports:
+ 			1. Except bits from the physical layer
+ 			2. Pass them to the Link Layer (Ethernet)
+ 			3. Pass to the Network Layer (IP)
+ 		- Swithcing Fabric:
+ 			- Types:
+ 				- Memory:<br>
+ 					`save the inputs to the memory and then copy them to the output`
+ 					- Old-School
+ 					- Slow
+ 					- Limited in speed by the bandwidth of the memory
+ 				- Bus:<br>
+ 					`transfer the datagram directly over shared bus`
+ 					- Limited in speed by the bus bandwidth
+ 				- Crossbar:
+					- Complicatd
+ 					- Costly
+ 					- Fast
+ 		- Output Ports:
+ 			- Oposite of the input ports
+ 			- Output port queing when arrival rate via the switch exceed the output line speed
+ 			- How much buffering ?
+ 				C: link capacity
+ 				RTT: round trip time
+ 				N: number of flows
+ 				B: Buffering
+				```
+ 					 RTT * C
+ 				    B = ---------
+ 					 sqrt(N)
+				```
+ 		- Routing processor:<br>
+ 			`implements the routing table`
+
+### Internet Protocol(IP):
+#### Introduction:
+- IP:
+ 	- addressing conventions
+ 	- datagram format
+ 	- packet handling conventions
+- Routing protocols:
+	- path selection
+ 	- RIP, OSPF, BGP
+- ICMP:
+ 	- error reporting
+ 	- touter "signaling"
+
+ #### Datagram Protocol:
+	 ```
+ 		<----------------- 32 bits ----------------->
+
+ 		+---+------+-----------+--------------------+
+ 		|ver|header|  type of  |      length        |
+ 		|   |length| service   |                    |
+ 		+---+------+-----------+-------+------------+
+ 		| 16-bit identifier    | flags | fragment   |
+ 		|                      |       | offset     |
+ 		+-----+----------------+-------+------------+
+ 		| TTL |  upper layer   | header checksum    |
+ 		+-----+----------------+--------------------+
+ 		|        32-bit source ip address           |
+ 		+-------------------------------------------+
+ 		|      32-bit destination ip address        |
+ 		+-------------------------------------------+
+ 		|               OPTIONS(if any)             |
+ 		+-------------------------------------------+
+ 		|         Data - variable name typically    |
+ 		|          TCP or UDP segment               |
+ 		+-------------------------------------------+
+	```
+- IP fragmentation & reassembly
+	- Maximum transfer unit (MTU):<br>
+	 	`the maximum size of link level frame (1500 bytes)`
+	- Fragmentation:<br>
+	 	`break down datframes that are bigger than MTU`
+	- Reassembly:<br>
+	 	`eassemble the broken down datframes`
+	 - Exmaple"
+	 	```
+	 		4000 bytes of datagram:
+			+------------+--------+--------------+------------+
+	 		| len = 4000 | ID = x | fragflag = 0 | offset = 0 |
+			+------------+--------+--------------+------------+
+	 		*Fragmentation
+	 		len = 1480 (bytes in data field) + header
+	 		! offset is in 8 bytes units
+			+------------+--------+--------------+--------------+
+	 		| len = 1500 | ID = x | fragflag = 1 | offset = 0   |
+			+------------+--------+--------------+--------------+
+	 		1480 / 8 = 185 offset
+			+------------+--------+--------------+--------------+
+	 		| len = 1500 | ID = x | fragflag = 1 | offset = 185 |
+			+------------+--------+--------------+--------------+
+	 		offset = 2 * 185
+	 		len = 4000 - 2 * 1480  
+			+------------+--------+--------------+--------------+
+	 		| len = 1040 | ID = x | fragflag = 0 | offset = 370 |
+			+------------+--------+--------------+--------------+
+		```
 
 
 
