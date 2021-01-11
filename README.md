@@ -7,6 +7,7 @@ The following chapters will include notes that I have made during reading Comput
 2. [Network layes](#nl)
 3. [Network securrity](#ns)
 4. [Application layer](#a)
+5. [Transport layer](#t)
 
 ## Delay, Loss and Throughput: <a name="dlt"></a>
 ### Sources of packet delay:
@@ -452,12 +453,11 @@ protocol  host   domain       path
  				5. Mail Server 2 checks if user agent 2 is active if so
  					sends the message id not it puts it in the queue again
  				6. User agent 2 receives the message
-
  			- Interaction:
+			```
  						S: 220 gmail.com
  						C: HELO abv.bg               | the handshake
  						S: 250 *greeting message     
-
  						C: MAIL FROM: <palpatine@abv.bg>    | the transfer of message 
  						S: 250 <palpatine@abv.bg> Sender ok...
  						C: RCPT TO: <the_senate@gmail.com> 
@@ -467,40 +467,35 @@ protocol  host   domain       path
  						C: I love democracy
  						C: .
  						S: 250 Message accepted for delivery
-
  						C: QUIT   | the closure
  						S: 221 gmail.com closing the connection
-
+			```
  			- Characteristics:
  				- Persistant connection:
  						one connection to do multiple messages
  				- 7-bit ASCII
-
- 				- CRLF.CRLF:
- 						end of a message 
+ 				- CRLF.CRLF: <br>
+ 						end of a message <br>
  						'\n.\n'
-
  		- Mail Message Format:	
 			- It uses the RFC 822 format
-
+			```
  				1 | HEADER 
  				2 | BLANK LINE
  				3 | BODY
- 				
- 			1. Header:
+ 			```	
+ 			1. Header:<br>
  				- contains: 
  					To
  					From
  					Subject
  					different form of SMTP commands
- 			2. Blank line:
+ 			2. Blank line:<br>
  				single blank line to separate the 
  				headers and the body
-
- 			3. Body:
+ 			3. Body:<br>
  				contains the 'message' in ASCII 
  				characters only
-
  		- Mail Access protocols:
  			- Post Office Protocol (POP3):
  				- Phase:
@@ -514,21 +509,19 @@ protocol  host   domain       path
 	 						-ERR
 						```
 	 				- Transaction Phase: <br>
-						
+					```
 	 						list: list of message numbers/ids <br>
 	 						retr: retrieve message by number <br>
 	 						dele: delete message <br>
 	 						quit: quit the service <br>
-	 				- Example: <br>
-					
 					```
-
+	 				- Example: <br>
+					```
 						S: +OK POP3 Server ready | authorization phase
 						C: user Mando
 						S: +OK
 						C: pass lovesGrogu123
 						S: +OK 
-
 						C: list  | transation phase
 						S: 1 243
 						S: 2 594
@@ -539,8 +532,7 @@ protocol  host   domain       path
 						C: dele 1 | dele doesn't have response
 						C: quit
 						S: +OK
-				```
-
+					```
 			- Internet Mail Access Protocol (IMAP):<br>
 						really complicated, involves folders
 				- Example:
@@ -590,22 +582,16 @@ protocol  host   domain       path
 							S:   * BYE IMAP4rev1 server terminating connection
 							S:   a006 OK LOGOUT completed
 					```
-
- 				
-
  			- POP vs IMPA:
  				- POP:
  					- stateless
  					- dowload and delete 
  					- dowload and keep
-
  				- IMPA:
  					- server 
  					- folders
  					- stateful
-
  		- SMTP vs. HTTP:
-
  			- Both work on command/response basis
  			-  Both use ASCII <br>
  				SMTP uses 7-bit ASCII <br>
@@ -634,9 +620,8 @@ protocol  host   domain       path
  		- google.com
  		- github.com
  		- etc.
-
- - Characteristics:
- 	- Distributed: <br>
+- Characteristics:
+	- Distributed: <br>
  		It exist in pieces everywhere
  	- Hierarchical: <br>
  		It structure so its components are hierarchically defined
@@ -682,50 +667,37 @@ protocol  host   domain       path
 
 - Hierarchy:
 
-	 			Root Servers
-	 				 |
-	 				 |
-	 				 |
-	 			Top-level domain servers
-	 				 |
-	 				 |
-	 				 |
-	 			Authoritative Servers
-
+	 Root Servers --> Top-level domain servers --> Authoritative Servers
 	- Types of queries:
-
 		- Iterated Query:
-
-	 				localhost -'starwars.com ?'-> localDNS
-	 				localDNS -'starwars.com ?'-> rootDNS
-	 				localDNS <-'don't know but check .com server'- rootDNS
-	 				localDNS -'starwars.com ?'-> .com server
-	 				localDNS <-'don't know but check disney.com server'- .com server
-	 				localDNS -'starwars.com ?'-> disney.com server
-	 				localDNS <-'23.53.34.49'- disney.com server
-	 				localDNS -'23.53.34.49'-> localhost
-
+			```
+			localhost -'starwars.com ?'-> localDNS
+			localDNS -'starwars.com ?'-> rootDNS
+			localDNS <-'don't know but check .com server'- rootDNS
+			localDNS -'starwars.com ?'-> .com server
+			localDNS <-'don't know but check disney.com server'- .com server
+			localDNS -'starwars.com ?'-> disney.com server
+			localDNS <-'23.53.34.49'- disney.com server
+			localDNS -'23.53.34.49'-> localhost
+			```
 	 	- Recursive Query:
-	 				localhost -'starwars.com ?'-> localDNS
-	 				localDNS -'starwars.com ?'-> rootDNS
-	 				rootDNS -'starwars.com ?'-> .com server
-	 				.com -'starwars.com ?'-> disney.com server
-	 				.com <-'starwars.com ?'- disney.com server
-	 				rootDNS <-'starwars.com ?' - .com
-	 				localDNS <-'starwars.com ?'- rootDNS
-	 				localhost <-'starwars.com ?'- localDNS
-
+			```
+			localhost -'starwars.com ?'-> localDNS			
+			localDNS -'starwars.com ?'-> rootDNS
+			rootDNS -'starwars.com ?'-> .com server
+			.com -'starwars.com ?'-> disney.com server
+			.com <-'starwars.com ?'- disney.com server
+			rootDNS <-'starwars.com ?' - .com
+			localDNS <-'starwars.com ?'- rootDNS
+			localhost <-'starwars.com ?'- localDNS
+			```<br>
 	 - DNS caching and updating:<br>
-
-	 Everything is cached usually
-
+		 Everything is cached usually
 	 - DNS records:<br>
-
 	 	- Distributed DB storing Resource Records
 	 				- (Name, Value, Type, TTL )
 	 					- TTL:
 	 						time to die is between 1 - 2^31 sec ~= 68 years 
-
 	 	- Records Types:
 	 		- Type  A:<br>
 	 			- mapping name to ip addresses
@@ -736,17 +708,14 @@ protocol  host   domain       path
 	 				3. Type : A
 	 			- Example: <br>
 	 				(www.google.com, 216.58.193.78, A, [time in seconds] )
-	 				
 	 		- Type NS (Name server):
 	 				1. Name:
 	 						domain
 	 				2. Value:
 	 						Hostname: of Authorutative Name server
 	 				3. Type: NS
-
 	 			- Example: <br>
 	 						(www.google.com, NS3.ZONEEDIT.COM, NS, [time in sec])
-	 				
 	 		- Type CNAME:<br>
 	 			- aliasing
 	 				1. Name:
@@ -754,21 +723,16 @@ protocol  host   domain       path
 	 				2. Value: 
 	 						Canonical name
 	 				3. Type: CNAME
-
 	 			- Example: <br>
 	 						(www.ibm.com, servereast.backup2.ibm.com, CNAME, [time in sec])
-
-
 	 		- Type MX (mail server):
 	 				1. Name:
 	 						hostname
 	 				2. Value: 
 	 						Name of Mail Server
 	 				3. Type: MX
- 
 	 			- Example: <br>
 	 						(www.google.com, www.gmail.com, MX, [time in sec])
-
 	 - DNS Protocol Messages:
 	 	- Messages:<br>
 	 		- Query and Reply
@@ -776,11 +740,10 @@ protocol  host   domain       path
 	 	- Header: 
 	 	 	- ID:
 	 		- Flag:
-
 	 	- Structure:
-
+		```
 	 			+-------------------------+--------------------------+  <-+
-	 			|     indentification     |          flag            |	 |
+	 			|     indentification     |          flag            |	  |
 	 			+-------------------------+--------------------------+    | 
 	 			|   number of questions   | number of answer RRs     |    | 12 bytes
 	 			+-------------------------+--------------------------+    |
@@ -792,28 +755,25 @@ protocol  host   domain       path
 	 			+----------------------------------------------------+
 	 			|    authority (variable number of resource records) |
 	 			+----------------------------------------------------+
-	 			| 	        additional information                |
+	 			| 	        additional information               |
 	 			|          (variable number of resource records)     |
 	 			+----------------------------------------------------+
-
-
+		```
+		<br>
 	 - Inserting Records;
 	 	- Register Name networkutopia.com at DNS Register:<br>
 	 				provide names, IP addresses of authoriative name server
-
 	 	- when registrating 2 RRs (resource records) are added into com TLD server:<br>
-
+			```
 	 			(networkutopia.com, dns1.networkutopia.com, NS)<br>
 	 			(dns1.networkutopia.com, 212.212.212.1, A) <br>
-
+			```
 - Pure P2P Architecture:
-
 	- No Always-On Server
 	- Arbitrary End Systems:
 		- Directly Communicate
 	- Intermittently Connections
 		- Changing Ip addresses
-
 	- File Distributiobution: 
 		- C-S vs P2P: <br>
 				Us: server upload speed<br>
@@ -823,11 +783,11 @@ protocol  host   domain       path
 				F - how many bits the message is<br>
 			- C-S (Client-Server):	
 					- Server: <br>
-						NF/Us bits/sec
+						NF/Us bits/sec<br>
 					- Client:<br>
 						F/Di bits/sec<br>
 					Dcs = max { NF/Us, F/min(Di)}<br>
-					# whichever has bigger value will be the bottleneck<br>
+					whichever has bigger value will be the bottleneck<br>
 			- P2P (Peer-to-peer):<br>
 			In this case the server has to upload the data only ones beacuse users can both upload and download
 				- Server:<br>
@@ -845,5 +805,237 @@ protocol  host   domain       path
 					to one point. <br>
 			```
 			
+## Transport layer <a name="t"></a>
+
+### Transport Service and Protocols:
+#### Purpose:
+
+		Providing of logical comunication between processes mostly
+		running on different hosts. It consists of end to end systems
+		that talk to eachother. 
+		
+- Network Vs Transport<br>
+		The Network is responsible is logical communication between host<br>
+		The Transport is responsible is logical communication between processes<br>
+	- Internet Transport Layer Protocols
+		- TCP:
+			- Reliable
+			- Flow control
+			- Congestion control
+			- in order
+		- UDP:
+			- unrealibale
+			- unordered
+			- "best effort"
+#### User Datagram Protocol(UDP):
+- Low effort:
+```
+	this processes is the low effort transport protocol
+	it does not care if a packet is lost or out of order.
+```
+- Connectionless:
+	- no handshake is needed before sending the data
+
+- Why is there UDP :
+	- No connection establishment:
+				- no delay
+	- No connection state:
+				- Simpler to send
+	- Small Segment Header:
+				- less wasted bandwidth
+	- No congestion control:
+				- no speed limit
+
+- Usage:
+	- Streaming Multimedia:
+		- Loss Tolerant
+		- Rate sensitive
+	- DNS:
+		-should be quick
+	- SNMP
+
+- Format:
+```
+
+			+------------32 bit---------+
+			|source port    | dest port |
+			+---------------+-----------+
+			|length (bytes) | checksum  |
+			+---------------+-----------+
+			|           message         |
+			+---------------------------+
+			
+```
+
+- UDP Checksum:
+```
+
+			Sender ---> 1.sequence of 16-bit ints
+						2.binary sum of the 16-bit
+						3. one's complement of the sum = checksum
+			Receiver --->	1. computes again
+						  	2. check if it is the same
+						  	3. if so "No error detected"
+						  	4. in not "Error Detected"
+```
+
+- Checksum wraparound:<br>
+carry that goes out of the 16 bits returns from the beginning
+	- Example: 
+```
+		a = 10101010
+		a << 1
+		a = 01010101
+```
+
+- Why do Checksum at Transport layer?
+	- no guarantees that the link layer is reliable
+	- End-to-end principle:
+	```
+		Comunications protocol operations should
+		be defined to occur at the end-points of
+		a comunication system.
+
+		Functions placed at the lower levels may be
+		redundant or of little value when compared to
+		providing them at the higher levels.
+
+		No layer can check the layer above so having the
+		checksum is guarantee that the network layer had no
+		corruptions.
+	```
+#### Principles of Reliable Data Transfer:
+- Reliable Data Transfer:
+	- Incremental Development:
+	```
+		incremental development is when you gradually increase the
+		possible errors in a system, program , etc in order to cope
+		with possible flaws one by one. In this example rdt is the
+		reliable data transfer program that we gradually introduce
+		problems to
+	```
+	- rdt1.0:
+		- No Bit Errors
+		- No Packet Loss
+
+	- rdt2.0:
+		- No Packet Loss 
+		- Bit Errors
+		- How to detect them bit errors:
+			- Checksum 
+			- Than what?
+		- How to recover from errors:
+			- Receiver Feedback:
+				- Acknowledgements: ACKs
+				- Negative Acknowledgements: NAKs
+			- Retransmission:
+				```
+					Stop and wait protocol. The sender
+					waits for a feedback based on the 
+					checksum algo. If it gets ACK it continues
+					else it resends
+				```
+		- What if ACK/NACK are corrupted?
+			- Use sequence numbers for packets
+
+	- rdt2.1: <br>
+		Resend current packet when corrupted ACK/NAK is recieved.
+		- Problem: <br>
+				If the ACK/NAK are corrupted duplicate data could
+						be sent
+		- Solution:<br>
+				Sequence numbers (0-1)
+		- Why only two sequence numbers ?
+			```
+				1 packet is being sent at a time.
+				if the sender sends two 1s the reciever will
+				know there is a packet missing and vice versa
+			```
+	- rdt2.2: <br> 
+		Does not use NAK
+		- How ?
+			```
+				In the ACK there is a sequence number if
+				the receiver returns ACK with a sequence number 1
+				when the sender sended ACK with a sequence number of 0
+				the sender would know that a packet was corupted
+			```
+	- rdt3.0:
+		- Bit Errors
+		- Packet Loss
+		- Error Detection:<br>
+						Checksum, ACKs Seq#, Retransmission
+		- Loss Detection:<br>
+			- Timeout
+				-  Real life example:
+					```
+								If your mother texts you and you don't answer
+								(don't acknowledge) your mother will w8 reasonable
+								amount of time and then will text you again.
+					```
+				- Contdown timer: <br>
+							if we don't get acknowledgement we send it again
+				- What if the packet is just delayed?<br>
+					- A duplicate will arrive. Solution?<br>
+						The solution is already introduced with the sequence numbers.
+			- EXAMPLE:
+			```
+						sender --pkt 0--> receiver
+						sender <-ACK 0--- receiver
+						sender --pkt 1--> receiver
+						sender <-ACK 1--- receiver
+						sender --pkt 0--> packet is lost
+						sender: *waits until the countdown timer runs off
+						timer: *runs off
+						sender --pkt 0--> receiver
+						sender <-ACK 0--- receiver
+			```
+			- Stop and wait operation:<br>
+				t : time<br>
+				L : packet length<br>
+				R : speed<br>
+				```
+				sender --pkt 0-->receiver // first packet bit is transmitted at t = 0
+							 	last packet bit is transmitted at t = L/R
+				sender <--ACK 0---receiver // first packet bit arrives,
+								last packet bit is arrives,
+									Send ACK
+				The problem is that in the time the countdown is going many packets
+				could be sent
+				``` 
+				- Utilization: 
+					- Fraction of Time Sender is sending: 
+					```
+						If the countdown is 0.01 and and it takes 0.00001sec to
+						send a packet a packet. This is 0,1 % utilization of the 
+						bandwidth. Anything else is just lost.
+					```
+				- How to improve the utilization?
+					- Pipeline protocol:
+					 	- sending multiple packets
+							- Increase amount of Seq#
+							- Buffering 
+						- Types: 
+							- Go-N-Back:<br>
+							send all the packets from N on again
+								1 Sender:
+									- send up to N unACked pkts in pipeline
+								2 Receiver:
+									- only sends cumulative ACKs
+									- does not send ACK if there is gap
+								3 Sender:
+									- timer for oldest unACKed pkt
+									- if timer expires, retransmit all unAcked pkt
+							```
+							- Selective Repeat:<br>
+								send only packet N, all the other are buffered
+							1 Sender: 
+								- up to N unACKed packets in pipeline
+							2 Receiver: 
+								- ACKs individual pkts
+							3 Sender: 
+								- Timer for each unACKed pkt
+								- If timer expires, retransmit only unACKed pk
+								
 
 
