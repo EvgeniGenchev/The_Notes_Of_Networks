@@ -225,30 +225,30 @@ between eachother
 
 - Processes:
 	- Process:
-		programing running within a host
+		- program running within a host
 	- Client Process:
-		initiates comunication
+		- initiates comunication
 	- Server Process: 
-		waits to be contacted
+		- waits to be contacted
 
 	- Sockets:
-		socket is a in point for communication
+		- socket is a in point for communication
 
 - Indentifier:
 	- IP address: 
-		address of a host
+		- address of a host
 	- Ports:
-		a way to uniquely indentify processes on a host
+		- a way to uniquely indentify processes on a host
 
 - App-layer Protocol Defines:
 	- Message Type:
-		request or response 
+		- request or response 
 	- Message Syntax:
-		description of the structure of the message
+		- description of the structure of the message
 	- Message Semantics:
-		description of the meaning of the message blocks
+		- description of the meaning of the message blocks
 	- Message Rules:
-		when and how processes repospond to messeges
+		- when and how processes repospond to messeges
 
 - Protocols:
 	- Public Domain:
@@ -259,15 +259,14 @@ between eachother
 		- BitTorrent
 		
 	- Proprietary: 
-		Skype (You can't make your own app that comunicates
-						in the skype network)
-		ppstream
+		- Skype (You can't make your own app that comunicates in the skype network)
+		- ppstream
 
 - Transport Services:
-	Data Loss
-	Timing
-	Throughput
-	Security
+	- Data Loss
+	- Timing
+	- Throughput
+	- Security
 
 - Internet transport protocols:
 	- TCP:
@@ -295,9 +294,11 @@ between eachother
 		- Why do we have it than:
 			it is faster than TCP
 #### Web and HTTP:
+<br>
 https://  www.   github.com   /EvegniGenchev <br>
 protocol  host   domain       path
  		 name         name
+<br>
  - HTTP:
  	- uses the TCP protocol
  		works on requests -> response basis
