@@ -8,7 +8,7 @@ The following chapters will include notes that I have made during reading Comput
 3. [Network securrity](#ns)
 4. [Application layer](#a)
 5. [Transport layer](#t)
-6. [Network layer](#n)
+6. [Network layer](#net)
 
 ## Delay, Loss and Throughput: <a name="dlt"></a>
 ### Sources of packet delay:
@@ -1409,7 +1409,7 @@ the received data.<br>
 		- Cut cwnd to 1
 	- 3 Duplicate ACKs
 		- Cut cwnd in half
-## Network layer:  <a name="n"</a><br>
+## Network layer:<a name="net"></a><br>
 `provides connection between two hosts.`
 ### Introduction:
 #### 2 Key Network-Layer Functions:
