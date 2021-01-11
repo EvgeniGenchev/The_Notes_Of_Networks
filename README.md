@@ -2,7 +2,12 @@
 
 The following chapters will include notes that I have made during reading Computer Networking: A Top-Down Approach, 6th Edition.
 
-## Delay, Loss and Throughput:
+# Table of contents
+1. [Delay, Loss and Throughput](#dlt)
+2. [Network layes](#nl)
+3. [Network securrity](#ns)
+
+## Delay, Loss and Throughput: <a name="dlt"></a>
 ### Sources of packet delay:
 #### Processing
 ```
@@ -39,7 +44,7 @@ is close to speed of light.
 		The rate at which the bits are transfered between the
 		sender and the reciever  
 
-## Network layers:
+## Network layers: <a name="nl"></a>
 ### Easy way to remeber:
 		All tree needs little pecans
 		p   r    e     i      h
@@ -100,15 +105,15 @@ opposite layers are not directly comunicating:
 ### NETWORK:
 
 #### Functions:
-Adressing the hosts:
-    -gives IP
-Provides routing data:
-    -in order to route data over multiple hops
-Congestion Control:
-	-coping wiht having more data than it can be sent 
+- Adressing the hosts:
+	- gives IP
+- Provides routing data:
+	- in order to route data over multiple hops
+- Congestion Control:
+	- coping wiht having more data than it can be sent 
 			without any significant delays or loseses
- Administration:
-		-provide functionality to administer routes
+ - Administration:
+	- provide functionality to administer routes
 
 ### LINK:
 
@@ -145,4 +150,44 @@ message ---> packet ---> datagram ---> frame
 -----end term-------
 ```
 
+
+## Network security: <a name="ns"></a>
+### Malware:
+- Trojan Horse:
+	- Injection of malicious code through an operational app. The trjoan
+				horse stays hidden in an app
+- Virus:
+	- infection through often gotten from email attachments or some skechy
+				attachment. Typically envolves self-replicating and spreading over
+				other machines.
+- Spyware:
+	- Keyloggers
+	- Monitorloggers
+	- User activity monitoring
+
+- Botnet:
+	- used for DDOS attacks
+
+
+- Denial of service Attack (DDOS):
+```
+	The attack makes the services and resources that a server provides 
+	unavailable for most or all of the legitimate users. A popular
+	way that is done is by overwhelming the server with fake requests.
+
+	Other one, is the Slow Loris, where the script feeds the server with
+	requests slow enough that can bearly keep the connection alive. Onces
+	all the connections are open by the loris script there is no way for
+	legitimate users to connect.
+```
+
+-Packet sniffing: 
+	- listening the network for foreign packets in order to obtain private user data
+
+- IP Spoofing:
+	- changing your IP address in order to impersonate other machines
+
+- Record and Playback:
+	- sniffing sensitive information and use it later while impersonating the target machine
+			even if the information is encrypted it still can be sent to the server successfully
 
