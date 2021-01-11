@@ -345,7 +345,7 @@ protocol  host   domain       path
 			- client sends HTTP request message
 		 	- server receives the HTTP request, sends response message
 		 	- client receives the HTTP response
-		 	- *comunication continues until the client initiates closing the connection
+		 	- comunication continues until the client initiates closing the connection
 
 - HTTP Request Message:
 	- Text Format:
@@ -816,6 +816,7 @@ protocol  host   domain       path
 ## Transport layer <a name="t"></a>
 
 ### Transport Service and Protocols:
+
 #### Purpose:
 
 		Providing of logical comunication between processes mostly
@@ -835,6 +836,7 @@ protocol  host   domain       path
 			- unrealibale
 			- unordered
 			- "best effort"
+			
 #### User Datagram Protocol(UDP):
 - Low effort:
 ```
@@ -903,11 +905,9 @@ carry that goes out of the 16 bits returns from the beginning
 		Comunications protocol operations should
 		be defined to occur at the end-points of
 		a comunication system.
-
 		Functions placed at the lower levels may be
 		redundant or of little value when compared to
 		providing them at the higher levels.
-
 		No layer can check the layer above so having the
 		checksum is guarantee that the network layer had no
 		corruptions.
@@ -959,6 +959,7 @@ carry that goes out of the 16 bits returns from the beginning
 				if the sender sends two 1s the reciever will
 				know there is a packet missing and vice versa
 			```
+
 	- rdt2.2: <br> 
 		Does not use NAK
 		- How ?
@@ -968,6 +969,7 @@ carry that goes out of the 16 bits returns from the beginning
 				when the sender sended ACK with a sequence number of 0
 				the sender would know that a packet was corupted
 			```
+
 	- rdt3.0:
 		- Bit Errors
 		- Packet Loss
@@ -1044,6 +1046,6 @@ carry that goes out of the 16 bits returns from the beginning
 							3 Sender: 
 								- Timer for each unACKed pkt
 								- If timer expires, retransmit only unACKed pk
-								
+
 
 
