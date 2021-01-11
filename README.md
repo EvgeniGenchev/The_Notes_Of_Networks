@@ -780,7 +780,7 @@ protocol  host   domain       path
 	 	- Structure:
 
 	 			+-------------------------+--------------------------+  <-+
-	 			|     indentification     |          flag            |	  |
+	 			|     indentification     |          flag            |	 |
 	 			+-------------------------+--------------------------+    | 
 	 			|   number of questions   | number of answer RRs     |    | 12 bytes
 	 			+-------------------------+--------------------------+    |
@@ -792,7 +792,7 @@ protocol  host   domain       path
 	 			+----------------------------------------------------+
 	 			|    authority (variable number of resource records) |
 	 			+----------------------------------------------------+
-	 			| 	        additional information               |
+	 			| 	        additional information                |
 	 			|          (variable number of resource records)     |
 	 			+----------------------------------------------------+
 
