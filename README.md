@@ -270,27 +270,35 @@ between eachother
 
 - Internet transport protocols:
 	- TCP:
-		- Connection oriented: 
-				Setting up connection between client and
-					server
-		- Reliable:
+		- Connection oriented: <br>
+		```
+			Setting up connection between client and server
+		```
+		- Reliable:<br>
+		```
 			it will resend packages if they are lost
-		- Flow control:
+		```
+		- Flow control:<br>
+		```
 			making sure the receiver is not overwhelmed
 			by proccesses by either slowing or speeding
 			up the rate of packets transmittion
 			AKA Slowing down because the receiver 
 			cannot accept the packages at the rate 
 			they are being send
+		```
 		- Conngestion Control:
-			Slowing down the sender beacuse the netowork
-			is not able to accept all the packets because
-			otherwise that could lead to packet lost 
-		- UDP:
+		```
+			Slowing down the sender beacuse the netowork<br>
+			is not able to accept all the packets because<br>
+			otherwise that could lead to packet lost
+		```
+	- UDP:<br>
+	```
 			NOT Reliable, Flow or Congestion control
 			It is connectionless and there is no guarantee
 			the packages will be transmitted 
-				
+	```	
 		- Why do we have it than:
 			it is faster than TCP
 #### Web and HTTP:
@@ -304,8 +312,8 @@ protocol  host   domain       path
  		works on requests -> response basis
 
  - Connections:
- 	- Nonpersistant:
- 		1 object is transmitted per connection
+ 	- Nonpersistant: 
+	`object is transmitted per connection`
 		- Steps:
 		 	- client initiates TCP connection
 		 	- server accepts connection
@@ -314,24 +322,23 @@ protocol  host   domain       path
 		 		sends response message
 		 	- client receives the HTTP response
 		 	- server closes the connection
-			
 		 - Response Time:
-		  	- Round Trip Time:
-		 		is the time it takes for a packet
+		  	- Round Trip Time:<br>
+		 		is the time it takes for a packet<br>
 		 		to travel client-->server-->client
-		  	- Response Time:
-		 		time to get receive the first bit
-		 		which is equal to twice the round 
+		  	- Response Time:<br>
+		 		time to get receive the first bit<br>
+		 		which is equal to twice the round <br>
 		 					trip time
-
-		 	- Problems:
+		 	- Problems:<br>
 		 		2 RTTs / Object
 		 				
  	- Persistant:
- 		+ multiple objects per connection
- 		+ reuses the open connection until all the requested packets are delivered
- 		+ sends requests imidiately
-
+		```
+ 		 multiple objects per connection
+ 		 reuses the open connection until all the requested packets are delivered
+ 		 sends requests imidiately
+		```
  		- Steps:
 		 	- client initiates TCP connection
 		 	- server accepts connection
@@ -353,7 +360,7 @@ protocol  host   domain       path
  					4 | Hello there....
  					  | 
 
- 	1. Request line 
+ 	1. Request line <br>
  		Consists of:
  			-  Request methods:
 	 				CONNECT
@@ -368,7 +375,7 @@ protocol  host   domain       path
  			- Resources
  			- Protocol
 
- 	2. Header lines:
+ 	2. Header lines <br>
  		- Host
  		- User-agent : 
  			the browser we ar going to use
@@ -376,14 +383,14 @@ protocol  host   domain       path
  			indicates what are we going to do with the connection afterwards
  		- Could include Accept-language
 
- 	3. Carriage Return:
+ 	3. Carriage Return <br>
  		 indicates the end of the header 
 
- 	4. Entity Body:
+ 	4. Entity Body <br>
  		 a message to be sent
  			not always needed
 
- 	- Form Input:
+ 	- Form Input <br>
 
 					 POST:
 					 push the data within the body of the message
