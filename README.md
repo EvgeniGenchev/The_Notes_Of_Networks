@@ -870,13 +870,13 @@ protocol  host   domain       path
 - UDP Checksum:
 ```
 
-			Sender ---> 1.sequence of 16-bit ints
-						2.binary sum of the 16-bit
-						3. one's complement of the sum = checksum
-			Receiver --->	1. computes again
-						  	2. check if it is the same
-						  	3. if so "No error detected"
-						  	4. in not "Error Detected"
+			Sender --->   1.sequence of 16-bit ints
+				      2.binary sum of the 16-bit
+				      3. one's complement of the sum = checksum
+			Receiver ---> 1. computes again
+				      2. check if it is the same
+				      3. if so "No error detected"
+				      4. in not "Error Detected"
 ```
 
 - Checksum wraparound:<br>
