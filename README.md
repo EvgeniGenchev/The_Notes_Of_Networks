@@ -10,10 +10,13 @@ The following chapters will include notes that I have made during reading Comput
 ```
     
 ### Queuing 
-```The time the packet waits its turn to be transmitted to the mediam.```
+```
+The time the packet waits its turn to be transmitted to the mediam.
+```
 
 ### Transmition 
-``` The transmition of the packet from the queue to the mediam.
+``` 
+The transmition of the packet from the queue to the mediam.
 
     L: lenght of the packet 
     R: transmission rate
@@ -22,9 +25,10 @@ The following chapters will include notes that I have made during reading Comput
 
 ```
 ### Propagataion
-```   The time that the signal needs to move
-			accross to the mediam. Propagataion time
-			is close to speed of light.
+```  
+The time that the signal needs to move
+accross to the mediam. Propagataion time
+is close to speed of light.
       
       s: sec 
       D: distance from node A to B
@@ -49,14 +53,14 @@ The following chapters will include notes that I have made during reading Comput
 		o
 		n
 
-##E2E vs P2P:
+## E2E vs P2P:
 		+---------------------------------+
 		|End-to-end     |  Point-to-point |
 		|---------------+-----------------|
 		|Application    |  Network        |
-		|Transport      |  Link 	      |
-		|			    |  Physical       |
-		|---------------|-----------------|
+		|Transport      |  Link 	  |
+		|	        |  Physical       |
+		+---------------+-----------------+
 
 
 End-to-end: the protocols of the layer directly comunicate with the protocol
@@ -101,46 +105,44 @@ Adressing the hosts:
 Provides routing data:
     -in order to route data over multiple hops
 Congestion Control:
--coping wiht having more data than it can be sent 
+	-coping wiht having more data than it can be sent 
 			without any significant delays or loseses
  Administration:
 		-provide functionality to administer routes
 
-		LINK:
+### LINK:
 
-			Functions:
-				Data Link Layer:
-					Framing:
-						-Breaking the data into frames that will fit accross the 
-							network.
-					Error Control:
-						-Detect when packets are corrupted and perhaps correct them.
-					Flow Control:
-						-Process of keeping the receiver from being overwhelmed from
-							the sender. If a there are more packeges arriving than the 
-							receiver can take, this function will help slow down the speed
-							at which the packets are arriving
-				Mediam Access Control Layer:
-					Sharing the Chanel:
-						-That is the address that is used to resolve contention on the chanel.
+#### Functions:
+#### Data Link Layer:
+- Framing:
+	- Breaking the data into frames that will fit accross the network.
+- Error Control:
+	- Detect when packets are corrupted and perhaps correct them.
+- Flow Control:
+	- Process of keeping the receiver from being overwhelmed from
+	the sender. If a there are more packeges arriving than the 
+	receiver can take, this function will help slow down the speed
+	at which the packets are arriving.
+- Mediam Access Control Layer:
+	- Sharing the Chanel:
+		- That is the address that is used to resolve contention on the chanel.
 							The MAC layer lets the chanel be shared fairly by the devices that 
 							want to use it at the samr time
 
-		PHYSICAL:
+### PHYSICAL:
+Transmittion of Raw bits:
+- Transmittion of Raw bits from node to node
 
-			Transmittion of Raw bits:
-			 	-Transmittion of Raw bits from node to node
+```
+-------term---------
+ENCAPSULATION:	
+Adding additional information to the packege in order for the packege 
+to be sent using another higher level protocol.
 
+progression of the package:
+message ---> packet ---> datagram ---> frame 
 
-		-------term---------
-		ENCAPSULATION:
-
-			Adding additional information to the packege in order for the packege 
-		to be sent using another higher level protocol.
-
-		progression of the package:
-		message ---> packet ---> datagram ---> frame 
-
-		-----end term-------
+-----end term-------
+```
 
 
