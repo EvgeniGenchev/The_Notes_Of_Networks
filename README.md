@@ -1,4 +1,4 @@
-# The_Notes_Of_Networks
+# The Notes Of Networks
 
 The following chapters will include notes that I have made during reading Computer Networking: A Top-Down Approach, 6th Edition.
 
