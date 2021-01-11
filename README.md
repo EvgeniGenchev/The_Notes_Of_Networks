@@ -304,7 +304,7 @@ between eachother
 			- it is faster than TCP
 #### Web and HTTP:
 <br>
-https://  www.   github.com   /EvegniGenchev <br>
+https://www.github.com/EvegniGenchev <br>
 protocol  host   domain       path
  		 name         name
 <br>
@@ -1539,7 +1539,7 @@ the received data.<br>
  	- error reporting
  	- touter "signaling"
 
- #### Datagram Protocol:
+#### Datagram Protocol:
 	 ```
  		<----------------- 32 bits ----------------->
 
