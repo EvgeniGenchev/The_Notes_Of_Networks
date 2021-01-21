@@ -1906,6 +1906,49 @@ the received data.<br>
 			- interiar to be as fast as possible whereas 
 						the exteriar does not necessarily need to be that way 
 ## Link layer:<a name="li"></a><br>
+## Network Layer
+### Introduction 
+- Nodes 
+	- Hosts and Router
+- Links
+	- Point-to-Point
+- Frame
+	- link layer packet 
+- Goal 
+`successfully transfer a datagram from one node to adjecent node over a link`
+#### Context 
+- Different Protocols for different links
+- Different Services
+	- Reliability
+#### Services
+
+- Framing, Link Access
+	- encapsulation 
+	- MAC addresses
+- Reliable Delivery
+	- efficient so tcp does not have to do it end to end
+- Flow Control
+- Error Detection
+- Error Correction
+- Half-Duplex and Full-Duplex
+	- half duplex bidirectional sending capability between two nodes (no at the same time)
+	- full duplex bidirectional sending capability between two nodes simultaneously
+#### Implementation
+- Network Iterface card (NIC):
+- Combination
+	- Hardware
+	- Software 
+	- Firmware
+
+#### Adaptors Comunication
+- Sender side 
+	1. Encapsulates datagram in frame
+	2. Adds Error Checking Bits, rdt, Flow Control, etc.
+- Receiving side:
+	1. Looks for Errors, rdt, Flow Control and etc.
+	2. Extracts Datagram
+	3. Passes to Upper layer
+### Error detection
 
 
 
