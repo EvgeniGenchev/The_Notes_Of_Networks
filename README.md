@@ -5,11 +5,12 @@ The following chapters will include notes that I have made during reading Comput
 # Table of contents
 1. [Delay, Loss and Throughput](#dlt)
 2. [Network layes](#nl)
-3. [Network securrity](#ns)
+3. [Network security intro](#ns)
 4. [Application layer](#a)
 5. [Transport layer](#t)
 6. [Network layer](#net)
-6. [Link layer](#li)
+7. [Link layer](#li)
+8. [Network security](#sec)
 
 ## Delay, Loss and Throughput: <a name="dlt"></a>
 ### Sources of packet delay:
@@ -2278,8 +2279,7 @@ The link layer will do CRC in hardware which will be faster.
 uses trunk port that connects the two physical switches and carries frames
 between these switches 
 ```	
-
-
+## Network Security <a name="sec"></a><br>
 
 
 
