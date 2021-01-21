@@ -9,6 +9,7 @@ The following chapters will include notes that I have made during reading Comput
 4. [Application layer](#a)
 5. [Transport layer](#t)
 6. [Network layer](#net)
+6. [Link layer](#li)
 
 ## Delay, Loss and Throughput: <a name="dlt"></a>
 ### Sources of packet delay:
@@ -1591,6 +1592,322 @@ the received data.<br>
 	 		| len = 1040 | ID = x | fragflag = 0 | offset = 370 |
 			+------------+--------+--------------+--------------+
 		```
+#### IPv4 addressing:
+- Interface:<br>
+	The connection between a router and physical link.<br>
+	Routers have many interfaces ---> many ip addresses
+- IP Addresses:<br>
+	32 bit binary   
+	```
+			> 1101111 0000001 0000001 0000001 		
+			decimal
+			> 14,614,785
+			dotted decimal:
+			> 223.1.1.1
+			slashed:
+			> 223.1.1/ 24 
+					in this case 24 give information about the portioning 
+					of the IP adress (host vs network)
+					The first 24 bits are part of the network address.
+					The last * are part in the host.
+		```
+- Subnet Mask:
+	- Address:
+		223.1.1.1
+	- Subnet Mask:
+		255.255.255.0 
+		*the same in meaning as 223.1.1/24
+	- Subnet:
+		223.1.1.x
+	- Classless Inter Domain Routing (CIDR):
+		- subnet portion of address of arbitrary length
+		- x in can be different from 8 bit value 
+		- Example:
+					```
+						200.23.16.0/23 
+													 ,
+						110010000.  00010111. 00010000. 00000000
+						<-------------23 bits-------><--9 bits->
+					```
+		- Why?
+			- Efficient utilization of the allocated addresses
+	- How does a host get an IP address?
+		- Manually 
+			- Hard-Coded
+				- DO NOT DO IT
+		- Automatically
+			- DHCP			
+	- Dyanmic Host Configuration Protocol (DHCP):
+		- Goal
+			- Dynamically Obtain IP Address 
+		- Overview
+			- Discover Message:
+				- alterting the need of IP addresses
+			- Offer Message
+				- offering available IP addresses
+			- Request Message
+				- request the offered IP addresses
+			- ACK Message
+				- ACK of the connection betweeen the 
+						host and the network
+		- Functionality beyond IP:
+			- Default Gateway
+			- DNS Server 
+			- Subnet Mask
+	- ICANN:
+		- Internet Corporation for Assigned Names and Bumbers
+	- Running out of IP addresses?
+		- Network Address Translation (NAT)
+			1. The router has only one IP address
+			2. All the host that are connected to the same router
+					have local private addresses
+			`10.0.0/24`
+			*this way all the hosts share one public IP address
+			- How to destinguish packages ?
+				- ports 
+			- Motivation:
+				- Usage of single IP address per LAN
+				- Advantages:
+					- Cost
+					- Flexibility
+					- Convenience 
+					- Security
+				- Not perfect ?
+					- Crosses layers
+						- router should process up until the network layer
+						*ports should be processed in the transport layer
+					- Violates End-to-End Principle
+					- Short-Sigthed Solution
+#### Internet control message protocol (ICMP):
+- Network-level signaling
+- Slightly Above IP
+ - ICMP message
+ 	- Type 
+ 	- Code
+ 	- 8 bytes of the datagram
+ - Traceroute and ICMP
+ 	- Source sends series of UDP segments to dest
+ 		- When n-th datagram arrives to n-th router 
+ 		- ICMP message TTL Expired packet (type 11, code 0)
+ 		- Source computes RTT.
+ 	- Stppping criteria
+ 		- Successful Arrival 
+ 		- Host Unreachable
+ 			- ICMP "host unreachable" (type 3, code 3)
+ 		
+#### IPv6:
+ - Inititial Motivation
+ 	- Address Space
+- Additional Motivations
+	- Speed
+	- Quality of service
+- Chnages
+	- Expanded Adressing
+	`128 bits 2^(128)`
+	- Streamlined Header
+		- 40 bytes
+	 	- Fixed
+	 	- No Fragmentation
+	- Flows and Priority
+- Header 
+ 	- Priority fieled 
+	 	- used to identify priority among datagrams in a flow
+	- Flow label
+	 	- used to identify datagrams in the same flow
+	- Next Header 
+	 	- upper layer
+	- No checksum 
+		- moved to be used only from the upper layers
+	- Options
+		- pushed out of the header into the payload
+	- ICMPv6 
+		- additional messages
+
+### Routing algorithm:
+#### Routing and Forwarding:
+- Graph
+	- G = (Nodes, Edges)
+		- Nodes 
+			- routers 
+			- {a, b , c, ...}
+		- Edges
+			- links 
+			- {(a,b), (a,c), ...}
+- Routing Protocol Classless:
+	- Link-State:
+		- complete topology
+		- info broadcast 
+		- global
+	- Distance Vector
+		- local topology
+		- info exchange
+		- decentralized
+- Routing Alogorithm Classsification
+	- Static
+	- Dynamical
+		- Periodic Update
+		- Link Cost Changes 	
+- Cost 
+	- Metrics
+		- Constant(1) : shortest path
+		- Bandwidth-Related 
+		- Congestion-Related
+
+#### LINK-State Routing Alogorithm
+	`Dijstra's Alogorithm`
+- Global Knowledge
+	- link Cost
+- Goal
+	- Least-Cost Paths
+- Iterative
+
+- Psuedo-code example 
+```
+	c(x,y) 	: link_cost
+	D(v) 	: Current Cost to destination
+	p(v) 	: Predecessor Node on Path to v
+	N'      : Nodes with known path
+	s       : source
+	inf     : infinite
+	Inititialization:
+		N' = {s}
+		for all nodes in n
+			if n adjacent to s 
+				then D(n) = c(s, n)
+			else D(n) = inf
+	Loop:
+		find m not in N' such that D(m) is a minimum add m to N'
+		update D(n) for all adjacent to m and not in N'
+		D(n) = min(D(n), D(m) + c(n,m))
+		/* new cost to m is either old cost to m or known
+		shortest path cost to n plus cost from m to n */
+		store p(m) //previous node
+		if N' has all nodes inside continue
+		else go to loop:
+```
+
+#### Distance Vector Routing
+`[ dx(y) = minv{ c(x, v) + dv(y)}]`
+- dx(y)
+	- cost of least-cost path from x to y
+- minv 
+	- min is taken over all neighbors v of x
+			```
+				This equation is named after Bellman-Ford and
+				it is used for calculating the shortest path.
+				The way that it works is neighboring routers
+				are sharing their distance vector to each
+				other after every share the dx(y) is being
+				updated using the bellman-ford algorithm 	
+			```  			
+- Characteristics
+	- Iterative 
+		- it repeats itself until all the
+					  routers have shared their distance
+					  distance vector.
+	- Asynchronous
+		- does not require all the nodes to
+					  work concurently
+	- Distributed
+		- each nodes acts independatly based
+					  on its neibhors distance vector
+- Why not great?
+	- Detect Change:
+		- the algoritm recieves "good news"
+					  faster than "bad news"
+		- count to infinity problem 
+						
+#### Link-State vs Distance vector
+- Summary: global knowledge vs. local knowledge
+- Messages: More (Broadcast) vs. Less( Exchange)
+- Message Size: Smaller(Link costs) vs. Larger(Distance vectors)
+- Convergence speed: Faster vs. Slower
+- Robustness: Better vs. Worse
+#### Hierarchial Routing
+- How it actually works
+	- Gateway Router
+	- Autonomous Systems (AS)
+		- system created of local routers
+	- Intra-AS routing 
+		- should use the same routing protocol
+					  in the same AS but different AS can
+					  run different routing protocol
+	- Intre-AS routing
+		- should use the same routing protocol
+					  (BGP)
+#### Routing in the internet
+- Types of protocols
+	- Interior Gateway Protocol
+	- Common Intra-AS Routing Protocols"
+		- RIP
+		* Routing information protocol
+			- Uses Distance Vectors
+			- Distance Metric 
+				- number of hops
+				- max 15 hops / how many subenets you go through
+			- RIP Advertisements
+				- sents every 30 sec
+				- distance vector has
+							  max lenght of 25
+			- RIP Failure 
+				- after 180 sec of no
+							  repsonses asumes
+							  connection is dead
+			- Table Proccessing 
+				- routed
+					- uses UDP
+		- OSPF 	
+		* Open Shortest Path First
+			- Uses Link State
+			- Advertisments 
+			- Advanced Features
+				- Security 
+				- Multiple Same-Cost Paths
+				- Multiple Cost Metrics
+				- Integrated Multicast
+				- Hierarchical OSPF
+					- 2-Level Hierarchy
+						- Local Area
+						- Backbone
+					- 3 Roles
+						- Area Border Router
+						- Backbone Router
+						- Boundary Router
+		- EIGRP		
+		* Enchanced Interior Gateway Routing Protocol
+			- Cisco 
+				- Proprietary 	
+	- Intre-AS Routing Protocol
+		- BGP
+			- Uses TCP
+			- Peers
+			- Sessions
+				- semi-permanent TCP connection
+				- External Sessions (Different ASes)
+				- Internal Sessions (Same AS)
+			- Path Attributes 
+				- prefix + attributes = route
+					- advertised prefix includes BGP attributes
+				- 2 Important Attributes
+					- AS-PATH
+					- NEXT-HOP
+				- Import Policy
+			- Route Selection 
+				1. Local Preferences Value Attribute: Policy Decision
+				2. Shortest AS-PATH
+				3. Closest NEXT-HOP router: Hot Potato Routing
+				4. additional criteria
+	- Why Different Types in Intra vs. Intre
+		- Policy
+			- enforce different policies on different layers
+		- Scale
+			- hierarchical routing 
+		- Performance 
+			- interiar to be as fast as possible whereas 
+						the exteriar does not necessarily need to be that way 
+## Link layer:<a name="li"></a><br>
+
+
 
 
 
