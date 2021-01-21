@@ -2178,11 +2178,106 @@ The link layer will do CRC in hardware which will be faster.
 	- 6 bytes each
 - Type 
 	- higher protocol
+- Data 
+	- 46 - 1500 bytes
 - CRC
 	- error detection
+#### Unreliable, Connectionless
+- Connectionless
+	- no handshaking
+- Unreliable 
+	- No ACKs or NACKs
+- Psuedo Code for EThernet CSMA/CD
+```
+1. Receives Datagram, Create Frame
+2. If channel Idle 
+	- Start transmission
+   Else 
+	- wait until Idle
+3. If collision detected
+	- abort and send jam signal
+	- enter exponential backoff
+		3.1. remembers how many times there was collision for that frame
+		3.2. generates random K from 0 to 2 ^ (times collision - 1)
+		3.3. waits K * 512 bit times
+		3.4. go to "2." 
+```
+- Exponential Backoff
+	- Goal 
+	`Adapt Retransmission Attemps to current Load`
+- CSMA / CD Efficienty
+	1 / (1 + 5 * (max prop delay)/(time to transmit max-size frame))
 
+	```
+	the efficiency coefficient is proportional to the time to transmit and conter 
+	proportional to the propagation delay 
+	```
+#### 802.3 Standards
+- Link and Physical Layer
+- Common MAC protocol and Frame Format 
+- Different Speeds
+	- 2 Mbps
+	- 10 Mbps
+	- 100 Mbps 
+	- ...
+- Different Physical Layer Media
+	- Fiber, Coper
+#### Manchester Encoding
+- 10BaseT
+- Each bit has a Transition
+	- Synchronization
+	- No Centralized, Global Clock
+### Switches & VLANs 
+#### Hubs 
+- Physical layer
+	- dump repeater
+	- no frame buffering
+	- no CSMA/CD
+#### Switches 
+- link layer
+	- smarter
+	- store, forward
+	- selectively forward
+	- CSMA/CD
+- Transperant
+- Plug and play
+	- self learning
+- Switch Table
+	1. MAC Address
+	2. Interface
+	3. Timestamp
+- Psuedo code
+```
+1. record link associated with sending host
+2. index switch table using MAC destination address
+3. If entry found for destination {
+	if dest on segment feom which frame arrived -> drop frame
+	else -> forward the frame on interface indicated
+   else -> broadcast to everyone except the sender  
+```
 
-
+- in case of multi-switches structre 
+	- broadcast to upper switch in order to broadcast to everyone
+#### Switches vs. ROuters
+1. Bothe Store-and-Forward
+2. Network vs. Link layer
+3. Routing vs. Switch table
+4. Routing Algorithm vs. Filtering, Learining Algorithms
+#### VLANs
+`virtual switch used for LAN administration`
+- Port-Based VLANs
+	- Traffic Isolation
+	`ports are distributed in advnace`
+	- Dynamic membership
+	`ports are distributed dynamically`
+	- Forwarding
+	`done via routing`
+* It is posiible to share a VLAN over two swithes. How?
+- Spanning Multiple Switches 
+```
+uses trunk port that connects the two physical switches and carries frames
+between these switches 
+```	
 
 
 
