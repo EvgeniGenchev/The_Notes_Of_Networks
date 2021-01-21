@@ -1948,7 +1948,185 @@ the received data.<br>
 	1. Looks for Errors, rdt, Flow Control and etc.
 	2. Extracts Datagram
 	3. Passes to Upper layer
-### Error detection
+### Error detection and correction
+#### Error detection 
+- Error Detection and Correction bits (EDC)
+```
+These bits are appened to the datagram and contain some information about the data inside.
+When received these bits are checked using some alogritm to determine if the data is correct.
+```
+
+- Error detection is not 100% reliable
+```
+Both EDC and the data could be corrupted in a way that the alogritm can produce false-positive.
+```
+#### Parity Checking 
+- Single Bit Parity
+	- detect single bit error
+`the problem with this method is that if there are even number of bits which are messed up it won't detect it`
+- Two Dimensional Bit Parity
+	- Detects and correct sigle bit errors
+```
+Put the data into a 2D matrics. Every column and row will have a parity check bit. The problem with this
+method is that in order to send 9 bits, for example, we will have to sent extra 6 parity check bits. This will
+result in using more bandwidth than needed.
+```
+#### Internet Checksum 
+- Sender
+	1. treats segment contents as sequence of 16-bit integers
+	2. checksum
+	`addition (1's complemtent sum) of segment conetents
+	3. sender puts checksum valure into UDP checksum field
+- Receiver
+	1. Computes checksum of received segment 
+	2. Checks if computed checksum equals checksum field value:
+		- NO > error detected
+		- YES > no errors detected 
+			*does not necesserily means there are no errors
+#### Cyclic Redundancy Check
+- Modulo-2 Arithmetic
+	- Addition
+	- Subtraction
+	- XOR
+- Alogrithm
+	1. View data bits as a binary number     	: D
+	2. Choose r + 1 bit pattern (generator)  	: G
+	3. Find r CRC bits				: R
+	4. Receiver divides D + R by G 
+	`if ((D * 2 ^ R) XOR R) % G == 0 --> no error`
+	- Example 
+	```python
+	D = b'101'
+	R = b'01' 
+	r = len(R)
+	D_R = (D * 2 ^ r) xor R # 10101
+	
+	print('No errors detected' if D_R % G == 0 else 'Error detected')
+	``` 
+#### CRC vs. Checksum
+- Why Checksum in Transport layer?
+```
+CRC is computational intesive and beacuse the Transport layer is implemented in software it will make it very slow
+``` 
+- Why CRC in Link layer?
+```
+The link layer will do CRC in hardware which will be faster.
+```
+### Multiple Access Links and Protocols
+#### Introduction
+- Types
+	- Point-to-Point
+	`one sender and one receiver'
+	- Broadcast 
+		- Shared Wire
+		- Shared Medium
+- Problem 
+	- Single Shared Brodcast Channel
+	- Collision between connection
+- Solution
+	- Mulpiple Acces Protocols
+		
+- Ideal MAP
+	1. Efficient 
+	2. Fair restribition of bandwidth 
+	3. Fully Decentralized
+	4. Simple 
+#### MAC Protocols
+- Channel Partitioning 
+`dividing the channel in pieces`
+	- Time Division Multiple Access (TDMA)
+	`divides the channel in different time slots`
+		- Problem 
+		`slot wasiting when a connection is idle during its time slot` 
+	- Frequency Division Multiple Access (FDMA)
+	`divides the channel based on diffent frequency`
+		- Problem
+		'same as above, resources can be wasted during idle sate'
+	- Code-division multiple access (CDMA)
+	
+- Random Access Protocols
+`whoever wants to transmit, transmits`
+	- Slotted ALOHA
+		- Assumptions 
+			- All frames same size
+			- Time Divided into equal sized slots
+			- Nodes start to Transmit Only at slot beginnning
+			- All Nodes detect collison
+		- Operations
+			- Transmit in Next Slot
+			- if no collision
+				- send next frame
+			- if collision
+			`retransmits based on probability`
+	```
+		Pros:			| Cons:
+	--------------------------------------------------------------
+	- Single active node can  	| - Collisions, Wasting Slots 
+	transmit at full rate of	| - Idle Slots
+	channel				| - Nodes may be able to detect
+	- Higly Decentralised		| collisions in less than time to
+	- Simple 			| transmit paket
+					| - Clock Synchronization
+	
+  	```
+	- ALOHA
+	- CSMA, CSMA/CD CSMA/CA
+- Taking Turns
+`only transimit when it is turn`
+	- Polling
+	- Token Ring
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
