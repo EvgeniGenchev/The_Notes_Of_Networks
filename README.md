@@ -2070,7 +2070,28 @@ The link layer will do CRC in hardware which will be faster.
 	
   	```
 	- ALOHA
-	- CSMA, CSMA/CD CSMA/CA
+		- Simlpler, No Synchronization
+		- When Frame Arrives Transmit immesiately
+		
+	- Carrier Sense Multiple Acces (CSMA)
+		- Listen before transmit
+		- if channel sensed idle
+			- transmit entire frame
+		- if channel sensed busy
+			- defer trnasmission
+		- Collisions can still occur
+		```
+		Even if there is listening two frames can be sent at relatively 
+		the same time beacause of the propagational delay between the 
+		two nodes. Thus, making a collision.
+		```
+	- CSMA/CD (Collision Detection)
+		- Collision Detection
+		- Stop transmitting if collision detected
+		`This way the collision time will be reduced`
+		*Does not work well in Wireless connection
+		
+	- CSMA/CA
 - Taking Turns
 `only transimit when it is turn`
 	- Polling
