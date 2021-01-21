@@ -2034,6 +2034,7 @@ The link layer will do CRC in hardware which will be faster.
 #### MAC Protocols
 - Channel Partitioning 
 `dividing the channel in pieces`
+* efficient at high load
 	- Time Division Multiple Access (TDMA)
 	`divides the channel in different time slots`
 		- Problem 
@@ -2046,6 +2047,7 @@ The link layer will do CRC in hardware which will be faster.
 	
 - Random Access Protocols
 `whoever wants to transmit, transmits`
+* efficient at low load
 	- Slotted ALOHA
 		- Assumptions 
 			- All frames same size
@@ -2095,7 +2097,92 @@ The link layer will do CRC in hardware which will be faster.
 - Taking Turns
 `only transimit when it is turn`
 	- Polling
+		- Master Node
+		`master node gives permission to the slave nodes to transmit`
+		- Concernes 
+			- Polling Overhead
+				`wasting bandwidth asking`
+			- Latency
+			- Single Point of Failure
+				- Master Node
 	- Token Ring
+	`only talk if you have the "token"`
+		- Token Message
+		- Concerns
+			- Toke Overhead 
+				`wasting bandwith moving the token`
+			- Latancy
+			- Single Point of Failure
+				- Token
+### Link layer addressing 
+#### IP vs MAC
+```
+		IP			| MAC
+		---------------------------------------------------
+		1. 32-bit		| 48-bit
+		2. Network layer 	| Link layer
+ 		3. Hierarchal 		| Flat
+		    - Not portable 	|     - portable
+```
+- IP is used to route datagrams from a subnet to subnet
+- MAC is used to get a frame from an interface to another one in the same network 
+1. Different sizes 
+2. Different layers
+3. MAC address do not change.Thus, no way to locate a MAC address by network. IP changes. (Remember NAT and submask)
+	- Example:
+	`street address vs social security number`
+#### LAN Adresses
+`Each adapter on LAN has unique LAN Address`
+#### Adress Resolution Protocol (ARP)
+- Problem
+`Knowledge on MAC does not mean you know the IP`
+- Solution 
+`ARP maps MAC Addresses to IP addresses using the ARP table`
+	- ARP Table
+		1. IP Address
+		2. MAC Address
+		3. TTL
+	- Same LAN
+		- A -> B
+		* B's MAC is not known
+		1. A Broadcast ARP Query
+			- Dest MAC = ff-ff-ff-ff-ff-ff
+			* using all f's means everyone in the local network receive the message
+		2. B Receives ARP Query
+		3. B Unicasts its MAC address to A
+		4. A caches MAC Address
+		```
+		ARP is plug and play. Meaning it is self learning algorithm which in the beginning
+		will require a lot of bandwidth due to empty tables. After that ARP Query will be 
+		sent only if new IP joins the local network 
+		```
+### Ehternet 
+#### Dominant Wired LAN Technology
+- Why?
+	- Cheap
+	- First
+	- Simple
+	- Fast
+- Topology
+	- 90's
+	`All computers connecting to one wire`
+	- Today
+	`Swithces are being used`
+#### Frame Structure
+```
+	Preamble | destination address | source address | type | data | CRC
+```
+- Preamble
+	- first 7 bytes 
+- Addresses 
+	- 6 bytes each
+- Type 
+	- higher protocol
+- CRC
+	- error detection
+
+
+
 
 
 
