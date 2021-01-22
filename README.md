@@ -2280,8 +2280,111 @@ uses trunk port that connects the two physical switches and carries frames
 between these switches 
 ```	
 ## Network Security <a name="sec"></a><br>
+### Cryptography
+#### Intro 
+- confidentiallity 
+	- sharing encrypted messeges only understandable by sender and receiver
+- authentication
+	- conformation of identity before transmittion
+- message integrity 
+	- ensurances of the uncahnged nature of the message
+- acces and availability 
+	- services must be accessible and available to users
+#### Diffie Hellman key exchange
+- Two public variables 
+	- g  
+	- n around 1024 bits long
 
+1. Host A has private key a
+2. Host B has private key b
+3. Host A calculates:
+```python
+temp_key_host_a = (g ^ a) % n
+		
+```
+4. Host B calculates:
+```python
+temp_key_host_b = (g ^ b) % n
 
+```
+5. Hosts exchange `temp_key_host_X` <a name=s5></a>
+6. Host A calculates:
+```python
+temp_key_host_ab = ((g ^ b)^a) % n # == g ^ (a * b) % n
+
+```
+7. Host A calculates:
+```python
+temp_key_host_ba = ((g ^ a)^b) % n # == g ^ (b * a) % n
+
+```
+8. Both host has the same key
+
+#### RSA
+`fixes the man in the middle problem in DH`
+* each host has private key and public key
+```
+the idea of having public and a private key is that hosts can be authenticated
+m 	: message 
+pr() 	: private key func
+pb()	: public key func
+
+the keys are designed in such a way that 
+pb(pr(m)) == m
+pr(pb(m)) != m
+
+```
+- with Diffie Hellman
+	* change m for the respected messeges
+	- on the exchange in [step 5](#s5) with `temp_key_host_X` a `pr(temp_key_host_X)` is being sent<br>
+	`In this way host a and b ca authenticate themsleves`
+### Certificates
+#### Transport Layer Security (TSL)
+- Where ?
+	- Between Transport and Application layer
+- Secure Socket Layer (SSL)
+- TLS Handshake
+	`TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`
+	1. ECDHE
+		- Diffie Hellaman 
+	2. RSA
+		- Auth
+	3. AES 
+		- key cypher
+	4. GCM
+		- mode of operation
+	5. SHA256 
+		- hashin algo
+```python
+
+MAX_TLS = 1.3
+seq_number = 5 # random number
+
+client_hello = {MAX_TLS,seq_number, cypher_list}
+
+client.sends(server, client_hello)
+
+server_hello = server.chooses(client_hello) #Example {1.2, 80, AES}
+
+server.sends(client, server_hello)
+
+certificate_pb = {certificate, server_pb}
+
+server.sends(client, certificate_pb)
+server.sends(client, {g, n, pr(sha256(certificate_pb)) }) # look in the Diffie Hellman for g, n and pr() info
+server.sends(cliend, "I'm done sneding")
+
+client.sends(server, client_pb)
+client.sends(server, {"FIN", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"})
+server.sends(server, {"FIN"})
+
+```
+- Must have
+	- pb, pr key exchange
+	- auth
+	- agrement on cyphers
+	- fininsh messages
+	- seq numbers
 
 
 
