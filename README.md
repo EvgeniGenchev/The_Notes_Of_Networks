@@ -1,6 +1,10 @@
 # The Notes Of Networks
 
-The following chapters will include notes that I have made during reading Computer Networking: A Top-Down Approach, 6th Edition.
+Edition 1.0 <br>
+The following chapters will include notes that I have made during reading Computer Networking: A Top-Down Approach, 6th Edition. The notes are<br>
+targeted towards people who might want to learn Data Networks basics and re-learners as a cheat sheet.<br>
+*THIS NOTES ARE MADE BY ME(Bachelor's degree ACS student). Thus, the information may be wrong, even though everything is checked with the book  Computer Networking: A Top-Down Approach, 6th Edition
+ 
 
 # Table of contents
 1. [Delay, Loss and Throughput](#dlt)
